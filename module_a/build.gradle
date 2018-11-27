@@ -1,0 +1,45 @@
+apply from: rootProject.file('cc-settings-2.gradle')
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion rootProject.compileVersion
+    buildToolsVersion rootProject.buildVersion
+
+    defaultConfig {
+        minSdkVersion 9 // support v7 minSdkVersion is 9
+        targetSdkVersion rootProject.compileVersion
+        if (project.ext.runAsApp) {
+            applicationId "com.cc.rptang.module_a"
+        }
+        versionCode 1
+        versionName "1.0"
+    }
+    resourcePrefix "module_a_"
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "http://192.168.2.1:8081/repository/com.rptang.testlib/") {
+            authentication(userName: "rptang", password: "123456")
+        }
+
+        pom.version = '0.0.4'
+        pom.artifactId = 'testlib'
+        pom.groupId = 'com.rptang'
+    }
+}
+
+dependencies {
+    implementation "com.android.support:appcompat-v7:${rootProject.supportVersion}"
+    api rootProject.ext.deps.cc
+}
+
+//开启app内部多进程组件调用
+ccregister.multiProcessEnabled = true

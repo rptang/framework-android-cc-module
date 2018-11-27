@@ -1,0 +1,46 @@
+ext.mainApp = true //如果此module为主app module，一直以application方式编译，则启用这一行
+apply from: rootProject.file('cc-settings-2.gradle')
+
+android {
+
+    compileSdkVersion rootProject.compileVersion
+    buildToolsVersion rootProject.buildVersion
+
+    defaultConfig {
+        applicationId "com.cc.rptang.test"
+        minSdkVersion 9 // support v7 minSdkVersion is 9
+        targetSdkVersion rootProject.compileVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+allprojects {
+    repositories{
+        maven{
+            url "http://192.168.2.1:8081/repository/com.rptang.testlib/"
+        }
+    }
+}
+
+dependencies {
+    implementation "com.android.support:appcompat-v7:${rootProject.supportVersion}"
+    //addComponent 'module_a'
+    addComponent 'module_a','com.rptang:testlib:0.0.1@aar'
+}
+
+//开启app内部多进程组件调用
+ccregister.multiProcessEnabled = true
